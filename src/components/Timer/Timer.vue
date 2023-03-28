@@ -13,6 +13,7 @@
     let intervalId = 0;
     let start = 0;
     let time = 0;
+    let pausedTime = 0;
 
     const updateTimer = () => {
         if (status.value !== 'started') {
@@ -30,10 +31,13 @@
             return;
         }
 
-        if (!start) {
+        if (!start && status.value === 'idle') {
             start = Date.now();
+        } else {
+            start = start + (Date.now() - pausedTime);
         }
 
+        pausedTime = 0;
         status.value = 'started';
 
         setTimeout(updateTimer, 100);
@@ -49,12 +53,15 @@
         value.value = 0;
         start = 0;
         time = 0;
+        pausedTime = 0;
     }
 
     const onPaused = () => {
         if (status.value !== 'started') {
             return;
         }
+
+        pausedTime = Date.now();
 
         clearTimeout(intervalId);
         status.value = 'paused';
