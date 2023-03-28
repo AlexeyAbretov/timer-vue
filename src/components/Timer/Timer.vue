@@ -37,6 +37,7 @@
         clearInterval(intervalId);
         status.value = 'idle';
         value.value = 0;
+        start = 0;
     }
 
     const onPaused = () => {
