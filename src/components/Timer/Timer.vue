@@ -16,14 +16,10 @@
     let pausedTime = 0;
 
     const updateTimer = () => {
-        if (status.value !== 'started') {
-            return;
-        }
-
         value.value = Math.floor((Date.now() - start) / 1000);
         time += 100;
         
-        setTimeout(updateTimer, Date.now() - start - time);
+        intervalId = setTimeout(updateTimer, Date.now() - start - time);
     };
 
     const onStart = () => {
@@ -40,7 +36,7 @@
         pausedTime = 0;
         status.value = 'started';
 
-        setTimeout(updateTimer, 100);
+        intervalId = setTimeout(updateTimer, 100);
     }
 
     const onStop = () => {
