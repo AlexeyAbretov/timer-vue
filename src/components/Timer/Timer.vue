@@ -11,17 +11,22 @@
     const status = ref('idle');
 
     let intervalId = 0;
+    let start = 0;
 
     const onStart = () => {
         if (!['idle', 'paused'].includes(status.value)) {
             return;
         }
 
+        if (!start) {
+            start = Date.now();
+        }
+
         status.value = 'started';
 
         intervalId = setInterval(() => {
-            value.value++;
-        }, 1000)
+            value.value = Math.floor((Date.now() - start) / 1000);
+        }, 0)
     }
 
     const onStop = () => {
