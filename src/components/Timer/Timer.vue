@@ -11,17 +11,32 @@
     const status = ref('idle');
 
     let intervalId = 0;
+    let start = 0;
+    let time = 0;
+
+    const updateTimer = () => {
+        if (status.value !== 'started') {
+            return;
+        }
+
+        value.value = Math.floor((Date.now() - start) / 1000);
+        time += 100;
+        
+        setTimeout(updateTimer, Date.now() - start - time);
+    };
 
     const onStart = () => {
         if (!['idle', 'paused'].includes(status.value)) {
             return;
         }
 
+        if (!start) {
+            start = Date.now();
+        }
+
         status.value = 'started';
 
-        intervalId = setInterval(() => {
-            value.value++;
-        }, 1000)
+        setTimeout(updateTimer, 100);
     }
 
     const onStop = () => {
@@ -29,9 +44,11 @@
             return;
         }
 
-        clearInterval(intervalId);
+        clearTimeout(intervalId);
         status.value = 'idle';
         value.value = 0;
+        start = 0;
+        time = 0;
     }
 
     const onPaused = () => {
@@ -39,7 +56,7 @@
             return;
         }
 
-        clearInterval(intervalId);
+        clearTimeout(intervalId);
         status.value = 'paused';
     }
 
